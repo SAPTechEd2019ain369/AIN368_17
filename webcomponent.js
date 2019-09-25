@@ -12,7 +12,7 @@
 
     d3Script.onload = () => 
 
-    customElements.define('com-sap-teched-gauge-XX', class Gauge extends HTMLElement {
+    customElements.define('com-sap-teched-gauge-solution-exe5', class Gauge extends HTMLElement {
 
 
         disconnectedCallback () {
@@ -21,6 +21,13 @@
                 document.head.removeChild(d3Script);
             }
             catch{}
+        }
+
+        connectedCallback () {
+            const bcRect = this.getBoundingClientRect();
+            this._widgetHeight = bcRect.height;
+            this._widgetWidth = bcRect.width;
+            this.redraw();
         }
     
         constructor() {
@@ -32,46 +39,61 @@
             
             this._shadowRoot = this.attachShadow({mode: 'open'});
             this._shadowRoot.appendChild(tmpl.content.cloneNode(true));
+            this.style.height = "100%";  //Beta Workaround
             this._svgContainer;
-            this.style.height = "100%";
-
+    
             this._outerRad = 0.0;
             this._endAngleDeg = 0.0;
             this._endAngleDegMax = 145.0;
             this._startAngleDeg = -145.0;
-            const bcRect = this.getBoundingClientRect();
-            this._widgetHeight = bcRect.height;
-            this._widgetWidth = bcRect.width;   
-
+            
             //Guide Lines
             this._ringColorCode = 'black';
             this._guideOpacity = 0.75;
             this._ringThickness = 5;
             this._bracketThickness = 5;
 
-            if (this._widgetHeight < this._widgetWidth){
-                this._widgetWidth = this._widgetHeight;
-            }
-            
-            this.redraw();
+            //Adding event handler for click events
+			this.addEventListener("click", event => {
+				var event = new Event("onClick");
+				this.dispatchEvent(event);
+			});
         };
+
+        onCustomWidgetResize(width, height) {
+            const bcRect = this.getBoundingClientRect();
+            this._widgetHeight = bcRect.height;
+            this._widgetWidth = bcRect.width;
+            this.redraw();
+        }
+
         //Getters and Setters
         get angleMax() {
             return this._endAngleDeg;
-        };
-
+        }
         set angleMax(value) {
-        //Empty the shadow dom
+            //Empty the shadow dom
             if (this._svgContainer){
                 this._svgContainer._groups[0][0].innerHTML = "";
             }
-    
+
             this._endAngleDeg = value;
             this.redraw();
         };
 
         redraw() {
+            if (this._widgetHeight < this._widgetWidth){
+                this._widgetWidth = this._widgetHeight;
+            }
+
             if (!this._svgContainer){
+                this._svgContainer = window._d3.select(this._shadowRoot)
+                .append("svg:svg")
+                .attr("id", "gauge")
+                .attr("width", this._widgetWidth)
+                .attr("height", this._widgetWidth);
+            } else{
+                window._d3.select(this._shadowRoot).selectAll("*").remove();
                 this._svgContainer = window._d3.select(this._shadowRoot)
                 .append("svg:svg")
                 .attr("id", "gauge")
@@ -142,7 +164,7 @@
             var endY = this._outerRad - (lineLength * Math.cos(lineAngle * (pi/180)));
             return {x:endX, y:endY}
         };
-
+    
     
     });
         
