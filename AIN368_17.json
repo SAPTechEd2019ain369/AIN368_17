@@ -12,21 +12,42 @@
 		{
 			"kind": "main",
 			"tag": "com-sap-teched-gauge-solution-exe2",
-            "url": "https://sapteched2019ain369.github.io/AIN369_SOLUTION_EX2/webcomponent.js",
-		            "integrity": "",
+            "url": "https://sapteched2019ain369.github.io/AIN369_17/webcomponent.js",
+			"properties": [
+				"angleMax"
+			],
+			"integrity": "",
             "ignoreIntegrity" : true
 		},
 		{
 			"kind": "styling",
 			"tag": "com-sap-teched-gauge-solution-exe2-aps",
-            "url": "https://sapteched2019ain369.github.io/AIN369_SOLUTION_EX2/aps_webcomponent.js",
+            "url": "https://sapteched2019ain369.github.io/AIN369_17/aps_webcomponent.js",
+			"properties": [
+			],
 			"integrity": "",
             "ignoreIntegrity" : true
 		}
     ],
 	"properties": {
+		"angleMax": {
+			"type": "number",
+			"description": "The resting angle of the gauge",
+			"default" : 0
+		}
 	},
 	"methods": {
+		"setAngle": {
+			"description": "Update the gauge angle",
+			"parameters": [
+				{
+					"name": "angleMax",
+					"type": "number",
+					"description": "The displayed angle of the gauge"
+				}
+			],
+            "body": "this.angleMax = angleMax;"
+		}
 	},
 	"events": {
 	}
